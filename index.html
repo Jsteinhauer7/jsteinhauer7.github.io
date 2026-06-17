@@ -69,9 +69,8 @@
         .hero-content{position:relative;z-index:3;text-align:center;max-width:900px}
         .hero-tag{display:inline-block;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.25);border-radius:24px;padding:8px 20px;font-size:0.75rem;color:#ff6b35;letter-spacing:3px;font-weight:500;margin-bottom:32px}
         .hero-name{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:0.92;letter-spacing:-0.04em;margin-bottom:28px}
-        .name-line{overflow:hidden;display:block;font-size:clamp(3.5rem,11vw,9rem)}
-        .name-inner{display:inline-block;background:linear-gradient(135deg,#ffffff 0%,#ff6b35 50%,#e84393 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:nameShift 6s ease-in-out infinite}
-        @keyframes nameShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .name-line{display:block;font-size:clamp(3.5rem,11vw,9rem)}
+        .name-inner{display:inline-block;color:#f5f5f5}
         .hero-accent-line{width:0;height:2px;background:linear-gradient(90deg,transparent,#ff6b35,#e84393,transparent);margin:0 auto 24px;transition:width 1.2s cubic-bezier(0.65,0,0.35,1)}
         .hero-accent-line.drawn{width:min(300px,60vw)}
         .hero-subtitle{font-size:1.3rem;color:#666;margin-bottom:12px;min-height:2rem}
@@ -106,8 +105,8 @@
         .stat-label{font-size:0.75rem;color:#444;margin-top:8px;display:block;letter-spacing:1.5px;text-transform:uppercase}
 
         /* SKILLS MARQUEE */
-        #skills{padding:100px 0}
-        .marquee{overflow:hidden;padding:12px 0;position:relative;width:100vw;left:50%;margin-left:-50vw}
+        #skills{padding:100px 0;overflow:hidden}
+        .marquee{overflow:hidden;padding:12px 0;position:relative;width:100%}
         .marquee::before,.marquee::after{content:'';position:absolute;top:0;width:80px;height:100%;z-index:2;pointer-events:none}
         .marquee::before{left:0;background:linear-gradient(to right,#050505,transparent)}
         .marquee::after{right:0;background:linear-gradient(to left,#050505,transparent)}
@@ -492,7 +491,7 @@
                     <h3>Scientific Computing with Python</h3>
                     <div class="cert-issuer">freeCodeCamp</div>
                     <div class="cert-date">June 2026</div>
-                    <a href="https://www.freecodecamp.org/certification/jsteinhauer7/python-v9" target="_blank" class="cert-link magnetic">View Certificate <i class="fas fa-arrow-right"></i></a>
+                    <a href="https://www.freecodecamp.org/certification/jsteinhauer7/python-v9" target="_blank" class="cert-link">View Certificate <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -620,13 +619,13 @@
     /* ── HERO ENTRANCE ── */
     function startHero(){
         const tl=gsap.timeline({defaults:{ease:'power3.out'}});
-        tl.from('.hero-tag',{y:30,opacity:0,duration:1})
-          .from('.name-inner',{y:'110%',duration:1.2,stagger:0.2},'-=0.6')
-          .add(()=>{document.getElementById('hero-line').classList.add('drawn')},'-=0.4')
-          .from('.hero-subtitle',{y:20,opacity:0,duration:0.8},'-=0.3')
-          .from('.hero-desc',{y:20,opacity:0,duration:0.8},'-=0.5')
-          .from('.hero-btns',{y:20,opacity:0,duration:0.8},'-=0.5')
-          .from('.hero-glow',{scale:0,opacity:0,duration:1.5,ease:'power2.out'},'-=1.8')
+        tl.from('.hero-tag',{y:20,opacity:0,duration:0.8})
+          .from('.name-inner',{opacity:0,duration:1,stagger:0.15},'-=0.4')
+          .add(()=>{document.getElementById('hero-line').classList.add('drawn')},'-=0.3')
+          .from('.hero-subtitle',{opacity:0,duration:0.8},'-=0.3')
+          .from('.hero-desc',{opacity:0,duration:0.8},'-=0.5')
+          .from('.hero-btns',{y:15,opacity:0,duration:0.8},'-=0.5')
+          .from('.hero-glow',{scale:0.5,opacity:0,duration:1.5,ease:'power2.out'},'-=1.8')
           .from('.hero-ring',{scale:0.5,opacity:0,duration:1.2,stagger:0.15,ease:'power2.out'},'-=1.5')
           .from('.scroll-indicator',{opacity:0,duration:1},'-=0.5');
         setTimeout(typeEffect,600);
