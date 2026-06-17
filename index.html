@@ -135,6 +135,25 @@
         .skill-pill:hover { background: rgba(255,107,53,0.2); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255,107,53,0.2); }
         .skill-pill i { display: block; font-size: 1.5rem; margin-bottom: 8px; color: #ff6b35; }
 
+        /* CERTIFICATIONS */
+        #certs { background: #0a0a0a; }
+        .certs-grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; max-width: 800px; margin: 0 auto; }
+        .cert-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,107,53,0.25);
+            border-radius: 20px; padding: 32px; width: 340px; text-align: center; transition: all 0.3s;
+        }
+        .cert-card:hover { border-color: rgba(255,107,53,0.5); transform: translateY(-6px); box-shadow: 0 16px 50px rgba(255,107,53,0.15); }
+        .cert-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .cert-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: #e0e0e0; }
+        .cert-issuer { color: #ff6b35; font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; }
+        .cert-date { color: #555; font-size: 0.8rem; margin-bottom: 16px; }
+        .cert-link {
+            display: inline-block; background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 8px; padding: 8px 20px; color: #ff6b35; text-decoration: none;
+            font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+        }
+        .cert-link:hover { background: #ff6b35; color: white; }
+
         /* PROJECTS */
         #projects { background: #0f0f0f; overflow: hidden; }
         .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
@@ -205,6 +224,7 @@
         <div class="nav-links">
             <a href="#about" data-section="about">About</a>
             <a href="#skills" data-section="skills">Skills</a>
+            <a href="#certs" data-section="certs">Certs</a>
             <a href="#projects" data-section="projects">Projects</a>
             <a href="#contact" data-section="contact">Contact</a>
             <a href="https://github.com/Jsteinhauer7" target="_blank" style="margin-left:30px;"><i class="fab fa-github"></i> GitHub</a>
@@ -250,6 +270,21 @@
             <div class="skill-pill reveal"><i class="fas fa-plug"></i>WebSockets</div>
             <div class="skill-pill reveal from-right"><i class="fas fa-cloud"></i>Vercel</div>
             <div class="skill-pill reveal from-left"><i class="fas fa-gamepad"></i>Pygame</div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section id="certs">
+        <h2 class="section-title reveal">My <span class="accent">Certifications</span></h2>
+        <p class="section-sub reveal">Credentials I've earned</p>
+        <div class="certs-grid">
+            <div class="cert-card reveal">
+                <div class="cert-icon">🏆</div>
+                <h3>Scientific Computing with Python</h3>
+                <div class="cert-issuer">freeCodeCamp</div>
+                <div class="cert-date">June 2026</div>
+                <a href="https://www.freecodecamp.org/certification/jsteinhauer7/python-v9" class="cert-link" target="_blank"><i class="fas fa-certificate"></i> View Certificate</a>
+            </div>
         </div>
     </section>
 
