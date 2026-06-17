@@ -70,7 +70,7 @@
         .hero-tag{display:inline-block;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.25);border-radius:24px;padding:8px 20px;font-size:0.75rem;color:#ff6b35;letter-spacing:3px;font-weight:500;margin-bottom:32px}
         .hero-name{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:0.92;letter-spacing:-0.04em;margin-bottom:28px}
         .name-line{display:block;font-size:clamp(3.5rem,11vw,9rem)}
-        .name-inner{display:inline-block;color:#f5f5f5}
+        .name-inner{display:inline-block;background:linear-gradient(135deg,#f5f5f5 0%,#ff6b35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0}
         .hero-accent-line{width:0;height:2px;background:linear-gradient(90deg,transparent,#ff6b35,#e84393,transparent);margin:0 auto 24px;transition:width 1.2s cubic-bezier(0.65,0,0.35,1)}
         .hero-accent-line.drawn{width:min(300px,60vw)}
         .hero-subtitle{font-size:1.3rem;color:#666;margin-bottom:12px;min-height:2rem}
@@ -115,8 +115,8 @@
         .marquee-item{display:flex;align-items:center;gap:10px;padding:12px 24px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:50px;white-space:nowrap;font-size:0.88rem;font-weight:500;color:#999;transition:all 0.3s}
         .marquee-item:hover{border-color:rgba(255,107,53,0.3);color:#fff;background:rgba(255,107,53,0.06)}
         .marquee-item i{color:#ff6b35;font-size:1rem}
-        @keyframes mScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-        @keyframes mReverse{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+        @keyframes mScroll{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
+        @keyframes mReverse{0%{transform:translateX(-33.33%)}100%{transform:translateX(0)}}
 
         /* PROJECTS — HORIZONTAL SCROLL */
         #projects{padding:0;overflow:hidden;background:rgba(255,255,255,0.008)}
@@ -150,7 +150,7 @@
         #certs{padding:120px 0}
         .cert-card-wrap{display:flex;justify-content:center}
         .cert-card{position:relative;background:#0a0a0a;border-radius:24px;padding:52px 48px;text-align:center;max-width:420px;width:100%;overflow:hidden}
-        .cert-card::before{content:'';position:absolute;inset:0;border-radius:24px;padding:2px;background:linear-gradient(135deg,#ff6b35,#e84393,#a855f7,#ff6b35);background-size:300% 300%;animation:borderGlow 4s ease infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+        .cert-card::before{content:'';position:absolute;inset:0;border-radius:24px;padding:2px;background:linear-gradient(135deg,#ff6b35,#e84393,#a855f7,#ff6b35);background-size:300% 300%;animation:borderGlow 4s ease infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
         @keyframes borderGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
         .cert-badge{font-size:3rem;margin-bottom:20px;display:block}
         .cert-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:600;color:#f0f0f0;margin-bottom:8px}
@@ -313,11 +313,28 @@
                 <div class="marquee-item"><i class="fab fa-github"></i><span>Git/GitHub</span></div>
                 <div class="marquee-item"><i class="fas fa-cloud"></i><span>REST APIs</span></div>
                 <div class="marquee-item"><i class="fas fa-shield-alt"></i><span>JWT Auth</span></div>
+                <div class="marquee-item"><i class="fab fa-python"></i><span>Python</span></div>
+                <div class="marquee-item"><i class="fas fa-flask"></i><span>Flask</span></div>
+                <div class="marquee-item"><i class="fas fa-bolt"></i><span>FastAPI</span></div>
+                <div class="marquee-item"><i class="fas fa-database"></i><span>PostgreSQL</span></div>
+                <div class="marquee-item"><i class="fab fa-html5"></i><span>HTML/CSS</span></div>
+                <div class="marquee-item"><i class="fab fa-js"></i><span>JavaScript</span></div>
+                <div class="marquee-item"><i class="fab fa-github"></i><span>Git/GitHub</span></div>
+                <div class="marquee-item"><i class="fas fa-cloud"></i><span>REST APIs</span></div>
+                <div class="marquee-item"><i class="fas fa-shield-alt"></i><span>JWT Auth</span></div>
             </div>
         </div>
         <div style="height:8px"></div>
         <div class="marquee marquee-reverse">
             <div class="marquee-track">
+                <div class="marquee-item"><i class="fas fa-check-circle"></i><span>Pydantic</span></div>
+                <div class="marquee-item"><i class="fas fa-server"></i><span>Railway</span></div>
+                <div class="marquee-item"><i class="fab fa-react"></i><span>React</span></div>
+                <div class="marquee-item"><i class="fas fa-database"></i><span>SQLite</span></div>
+                <div class="marquee-item"><i class="fas fa-layer-group"></i><span>SQLAlchemy</span></div>
+                <div class="marquee-item"><i class="fas fa-plug"></i><span>WebSockets</span></div>
+                <div class="marquee-item"><i class="fas fa-cloud"></i><span>Vercel</span></div>
+                <div class="marquee-item"><i class="fas fa-gamepad"></i><span>Pygame</span></div>
                 <div class="marquee-item"><i class="fas fa-check-circle"></i><span>Pydantic</span></div>
                 <div class="marquee-item"><i class="fas fa-server"></i><span>Railway</span></div>
                 <div class="marquee-item"><i class="fab fa-react"></i><span>React</span></div>
@@ -620,7 +637,7 @@
     function startHero(){
         const tl=gsap.timeline({defaults:{ease:'power3.out'}});
         tl.from('.hero-tag',{y:20,opacity:0,duration:0.8})
-          .from('.name-inner',{opacity:0,duration:1,stagger:0.15},'-=0.4')
+          .to('.name-inner',{opacity:1,duration:1,stagger:0.15},'-=0.4')
           .add(()=>{document.getElementById('hero-line').classList.add('drawn')},'-=0.3')
           .from('.hero-subtitle',{opacity:0,duration:0.8},'-=0.3')
           .from('.hero-desc',{opacity:0,duration:0.8},'-=0.5')
