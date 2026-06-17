@@ -534,49 +534,99 @@
     <script>
     (function(){
 
-    /* ── INTERACTIVE PARTICLE FIELD ── */
+    /* ── INTERACTIVE HERO CANVAS ── */
     const pCanvas = document.getElementById('particle-canvas');
     const pCtx = pCanvas.getContext('2d');
     let pW, pH;
-    const mouse = {x:-9999,y:-9999,radius:160};
-    let particles = [];
+    const mouse = {x:-9999,y:-9999,px:-9999,py:-9999,vx:0,vy:0,speed:0};
 
-    function initParticles(){
-        pW = pCanvas.width = window.innerWidth;
-        pH = pCanvas.height = window.innerHeight;
-        particles = [];
-        const count = Math.min(60, Math.floor(pW * pH / 25000));
-        for(let i=0;i<count;i++){
-            const x = Math.random()*pW, y = Math.random()*pH;
-            particles.push({x,y,ox:x,oy:y,vx:0,vy:0,r:Math.random()*2.5+1,a:Math.random()*0.4+0.2});
+    function resizeCanvas(){pW=pCanvas.width=window.innerWidth;pH=pCanvas.height=window.innerHeight;blobCX=pW/2;blobCY=pH/2;blobTX=pW/2;blobTY=pH/2}
+    resizeCanvas();
+    window.addEventListener('resize',resizeCanvas);
+
+    document.addEventListener('mousemove',e=>{
+        mouse.px=mouse.x;mouse.py=mouse.y;
+        mouse.x=e.clientX;mouse.y=e.clientY;
+        mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
+        mouse.speed=Math.sqrt(mouse.vx*mouse.vx+mouse.vy*mouse.vy);
+        const count=Math.min(Math.floor(mouse.speed/3)+1,5);
+        for(let i=0;i<count;i++)spawnTrail();
+    });
+
+    /* ── GRADIENT BLOB ── */
+    const blobs=[];
+    for(let i=0;i<5;i++){
+        const a=(i/5)*Math.PI*2;
+        const colors=[[255,107,53],[232,67,147],[168,85,247]];
+        blobs.push({x:0,y:0,tx:0,ty:0,angle:a,orbit:80+Math.random()*60,speed:0.0003+Math.random()*0.0004,size:150+Math.random()*100,c:colors[i%3],a:0.12+Math.random()*0.06});
+    }
+    let blobCX,blobCY,blobTX,blobTY;
+
+    function updateBlob(t){
+        if(mouse.x>0){blobTX=mouse.x;blobTY=mouse.y}
+        blobCX+=(blobTX-blobCX)*0.02;blobCY+=(blobTY-blobCY)*0.02;
+        for(const b of blobs){
+            const ang=b.angle+t*b.speed;
+            b.tx=blobCX+Math.cos(ang)*b.orbit;b.ty=blobCY+Math.sin(ang)*b.orbit;
+            b.x+=(b.tx-b.x)*0.04;b.y+=(b.ty-b.y)*0.04;
         }
     }
-    initParticles();
-    window.addEventListener('resize',initParticles);
-    document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+    function drawBlob(){
+        for(const b of blobs){
+            const g=pCtx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.size);
+            const[r,gr,bl]=b.c;
+            g.addColorStop(0,`rgba(${r},${gr},${bl},${b.a})`);
+            g.addColorStop(0.5,`rgba(${r},${gr},${bl},${b.a*0.4})`);
+            g.addColorStop(1,`rgba(${r},${gr},${bl},0)`);
+            pCtx.fillStyle=g;pCtx.beginPath();pCtx.arc(b.x,b.y,b.size,0,Math.PI*2);pCtx.fill();
+        }
+    }
 
-    function drawParticles(){
-        pCtx.clearRect(0,0,pW,pH);
-        for(const p of particles){
-            const dx=mouse.x-p.x, dy=mouse.y-p.y, dist=Math.sqrt(dx*dx+dy*dy);
-            if(dist<mouse.radius){
-                const force=(mouse.radius-dist)/mouse.radius;
-                p.vx -= (dx/dist)*force*2.5;
-                p.vy -= (dy/dist)*force*2.5;
+    /* ── CURSOR TRAIL ── */
+    const trail=[];
+    function spawnTrail(){
+        if(trail.length>=80)return;
+        const spread=Math.min(mouse.speed*0.5,15);
+        const sf=Math.min(mouse.speed/30,1);
+        trail.push({
+            x:mouse.x+(Math.random()-0.5)*spread,y:mouse.y+(Math.random()-0.5)*spread,
+            vx:mouse.vx*(0.1+Math.random()*0.15)+(Math.random()-0.5)*1.5,
+            vy:mouse.vy*(0.1+Math.random()*0.15)+(Math.random()-0.5)*1.5,
+            sz:2+mouse.speed*0.08+Math.random()*2,life:1,
+            decay:0.01+Math.random()*0.015,
+            r:255,g:Math.floor(107+(67-107)*sf),b:Math.floor(53+(147-53)*sf),
+            grav:0.02+Math.random()*0.03
+        });
+    }
+    function updateTrail(){
+        for(let i=trail.length-1;i>=0;i--){
+            const p=trail[i];
+            p.vy+=p.grav;p.vx*=0.98;p.vy*=0.98;
+            p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;p.sz*=0.995;
+            if(p.life<=0)trail.splice(i,1);
+        }
+    }
+    function drawTrail(){
+        for(const p of trail){
+            const a=p.life*0.7;
+            pCtx.beginPath();pCtx.arc(p.x,p.y,p.sz,0,Math.PI*2);
+            pCtx.fillStyle=`rgba(${p.r},${p.g},${p.b},${a})`;pCtx.fill();
+            if(p.life>0.5&&p.sz>2){
+                const g=pCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);
+                g.addColorStop(0,`rgba(${p.r},${p.g},${p.b},${a*0.3})`);
+                g.addColorStop(1,`rgba(${p.r},${p.g},${p.b},0)`);
+                pCtx.fillStyle=g;pCtx.beginPath();pCtx.arc(p.x,p.y,p.sz*3,0,Math.PI*2);pCtx.fill();
             }
-            p.vx += (p.ox-p.x)*0.02;
-            p.vy += (p.oy-p.y)*0.02;
-            p.vx *= 0.94; p.vy *= 0.94;
-            p.x += p.vx; p.y += p.vy;
-
-            pCtx.beginPath();
-            pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
-            pCtx.fillStyle=`rgba(255,140,50,${p.a})`;
-            pCtx.fill();
         }
-        requestAnimationFrame(drawParticles);
     }
-    drawParticles();
+
+    /* ── CANVAS LOOP ── */
+    (function animate(){
+        pCtx.clearRect(0,0,pW,pH);
+        updateBlob(Date.now());drawBlob();
+        updateTrail();drawTrail();
+        requestAnimationFrame(animate);
+    })();
 
     /* ── GSAP SETUP ── */
     gsap.registerPlugin(ScrollTrigger);
