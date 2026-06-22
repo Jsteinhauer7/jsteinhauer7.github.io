@@ -59,20 +59,8 @@
 
         /* HERO */
         .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:100px 20px 60px}
-        #particle-canvas{position:absolute;inset:0;z-index:1}
-        .hero-glow{position:absolute;width:clamp(300px,50vw,600px);height:clamp(300px,50vw,600px);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,rgba(232,67,147,0.06) 40%,transparent 70%);z-index:0;animation:glowPulse 4s ease-in-out infinite}
-        @keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.15);opacity:0.7}}
-        .hero-ring{position:absolute;width:clamp(400px,55vw,700px);height:clamp(400px,55vw,700px);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid rgba(255,107,53,0.06);z-index:0;animation:ringExpand 6s ease-in-out infinite}
-        .hero-ring:nth-child(4){width:clamp(500px,65vw,850px);height:clamp(500px,65vw,850px);animation-delay:-2s;border-color:rgba(232,67,147,0.04)}
-        .hero-ring:nth-child(5){width:clamp(600px,75vw,1000px);height:clamp(600px,75vw,1000px);animation-delay:-4s;border-color:rgba(168,85,247,0.03)}
-        @keyframes ringExpand{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.06);opacity:0.4}}
-        .hero-content{position:relative;z-index:3;text-align:center;max-width:900px}
-        .hero-tag{display:inline-block;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.25);border-radius:24px;padding:8px 20px;font-size:0.75rem;color:#ff6b35;letter-spacing:3px;font-weight:500;margin-bottom:32px}
-        .hero-name{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:0.92;letter-spacing:-0.04em;margin-bottom:28px}
-        .name-line{display:block;font-size:clamp(3.5rem,11vw,9rem)}
-        .name-inner{display:inline-block;background:linear-gradient(135deg,#f5f5f5 0%,#ff6b35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0}
-        .hero-accent-line{width:0;height:2px;background:linear-gradient(90deg,transparent,#ff6b35,#e84393,transparent);margin:0 auto 24px;transition:width 1.2s cubic-bezier(0.65,0,0.35,1)}
-        .hero-accent-line.drawn{width:min(300px,60vw)}
+        #particle-canvas{position:absolute;inset:0;z-index:1;cursor:default}
+        .hero-content{position:relative;z-index:3;text-align:center;max-width:900px;margin-top:clamp(180px,22vw,320px)}
         .hero-subtitle{font-size:1.3rem;color:#666;margin-bottom:12px;min-height:2rem}
         .typed-cursor{color:#ff6b35;animation:blink 0.7s infinite;font-weight:300}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -176,7 +164,7 @@
             nav{padding:14px 20px}
             .nav-links{display:none}
             .nav-toggle{display:flex}
-            .name-line{font-size:clamp(2.5rem,10vw,4.5rem)}
+            .hero-content{margin-top:clamp(220px,40vw,350px)}
             section{padding:80px 0}
             .projects-pin{height:auto;min-height:auto;flex-direction:column;padding:80px 0}
             .projects-track{flex-direction:column;padding:0 24px;gap:20px}
@@ -234,17 +222,7 @@
     <!-- HERO -->
     <section class="hero" id="hero">
         <canvas id="particle-canvas"></canvas>
-        <div class="hero-glow"></div>
-        <div class="hero-ring"></div>
-        <div class="hero-ring"></div>
-        <div class="hero-ring"></div>
         <div class="hero-content">
-            <div class="hero-tag">PORTFOLIO &middot; 2026</div>
-            <h1 class="hero-name">
-                <span class="name-line"><span class="name-inner">JUSTIN</span></span>
-                <span class="name-line"><span class="name-inner">STEINHAUER</span></span>
-            </h1>
-            <div class="hero-accent-line" id="hero-line"></div>
             <div class="hero-subtitle">
                 <span id="typed-text"></span><span class="typed-cursor" id="typed-cursor">|</span>
             </div>
@@ -534,98 +512,125 @@
     <script>
     (function(){
 
-    /* ── INTERACTIVE HERO CANVAS ── */
+    /* ── PARTICLE TEXT HERO ── */
     const pCanvas = document.getElementById('particle-canvas');
     const pCtx = pCanvas.getContext('2d');
     let pW, pH;
-    let blobCX,blobCY,blobTX,blobTY;
-    const mouse = {x:-9999,y:-9999,px:-9999,py:-9999,vx:0,vy:0,speed:0};
+    const mouse = {x:-9999,y:-9999,radius:120};
+    let textParticles = [];
+    let animReady = false;
 
-    function resizeCanvas(){pW=pCanvas.width=window.innerWidth;pH=pCanvas.height=window.innerHeight;blobCX=pW/2;blobCY=pH/2;blobTX=pW/2;blobTY=pH/2}
+    function resizeCanvas(){
+        pW=pCanvas.width=window.innerWidth;
+        pH=pCanvas.height=window.innerHeight;
+        if(animReady) buildParticles();
+    }
     resizeCanvas();
     window.addEventListener('resize',resizeCanvas);
 
-    document.addEventListener('mousemove',e=>{
-        mouse.px=mouse.x;mouse.py=mouse.y;
-        mouse.x=e.clientX;mouse.y=e.clientY;
-        mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
-        mouse.speed=Math.sqrt(mouse.vx*mouse.vx+mouse.vy*mouse.vy);
-        const count=Math.min(Math.floor(mouse.speed/3)+1,5);
-        for(let i=0;i<count;i++)spawnTrail();
+    pCanvas.addEventListener('mousemove',e=>{
+        const rect=pCanvas.getBoundingClientRect();
+        mouse.x=e.clientX-rect.left;
+        mouse.y=e.clientY-rect.top;
     });
+    pCanvas.addEventListener('mouseleave',()=>{mouse.x=-9999;mouse.y=-9999});
+    pCanvas.addEventListener('touchmove',e=>{
+        const rect=pCanvas.getBoundingClientRect();
+        mouse.x=e.touches[0].clientX-rect.left;
+        mouse.y=e.touches[0].clientY-rect.top;
+    },{passive:true});
+    pCanvas.addEventListener('touchend',()=>{mouse.x=-9999;mouse.y=-9999});
 
-    /* ── GRADIENT BLOB ── */
-    const blobs=[];
-    for(let i=0;i<5;i++){
-        const a=(i/5)*Math.PI*2;
-        const colors=[[255,107,53],[232,67,147],[168,85,247]];
-        blobs.push({x:0,y:0,tx:0,ty:0,angle:a,orbit:80+Math.random()*60,speed:0.0003+Math.random()*0.0004,size:150+Math.random()*100,c:colors[i%3],a:0.12+Math.random()*0.06});
-    }
-    function updateBlob(t){
-        if(mouse.x>0){blobTX=mouse.x;blobTY=mouse.y}
-        blobCX+=(blobTX-blobCX)*0.02;blobCY+=(blobTY-blobCY)*0.02;
-        for(const b of blobs){
-            const ang=b.angle+t*b.speed;
-            b.tx=blobCX+Math.cos(ang)*b.orbit;b.ty=blobCY+Math.sin(ang)*b.orbit;
-            b.x+=(b.tx-b.x)*0.04;b.y+=(b.ty-b.y)*0.04;
+    class Particle {
+        constructor(x,y,color){
+            this.originX=x;this.originY=y;
+            this.x=x+((Math.random()-0.5)*pW);
+            this.y=y+((Math.random()-0.5)*pH);
+            this.vx=0;this.vy=0;
+            this.color=color;
+            this.size=2.2;
+            this.friction=0.92;
+            this.springSpeed=0.02+Math.random()*0.02;
         }
-    }
-    function drawBlob(){
-        for(const b of blobs){
-            const g=pCtx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.size);
-            const[r,gr,bl]=b.c;
-            g.addColorStop(0,`rgba(${r},${gr},${bl},${b.a})`);
-            g.addColorStop(0.5,`rgba(${r},${gr},${bl},${b.a*0.4})`);
-            g.addColorStop(1,`rgba(${r},${gr},${bl},0)`);
-            pCtx.fillStyle=g;pCtx.beginPath();pCtx.arc(b.x,b.y,b.size,0,Math.PI*2);pCtx.fill();
+        update(){
+            const dx=mouse.x-this.x;
+            const dy=mouse.y-this.y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<mouse.radius){
+                const force=(mouse.radius-dist)/mouse.radius;
+                const angle=Math.atan2(dy,dx);
+                this.vx-=Math.cos(angle)*force*8;
+                this.vy-=Math.sin(angle)*force*8;
+            }
+            this.vx+=(this.originX-this.x)*this.springSpeed;
+            this.vy+=(this.originY-this.y)*this.springSpeed;
+            this.vx*=this.friction;
+            this.vy*=this.friction;
+            this.x+=this.vx;
+            this.y+=this.vy;
+        }
+        draw(ctx){
+            const dx=this.x-this.originX;
+            const dy=this.y-this.originY;
+            const displacement=Math.sqrt(dx*dx+dy*dy);
+            const maxDisp=200;
+            const t=Math.min(displacement/maxDisp,1);
+            const r=Math.floor(255);
+            const g=Math.floor(107+(67-107)*t);
+            const b=Math.floor(53+(147-53)*t);
+            ctx.fillStyle=`rgb(${r},${g},${b})`;
+            ctx.beginPath();
+            ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+            ctx.fill();
         }
     }
 
-    /* ── CURSOR TRAIL ── */
-    const trail=[];
-    function spawnTrail(){
-        if(trail.length>=80)return;
-        const spread=Math.min(mouse.speed*0.5,15);
-        const sf=Math.min(mouse.speed/30,1);
-        trail.push({
-            x:mouse.x+(Math.random()-0.5)*spread,y:mouse.y+(Math.random()-0.5)*spread,
-            vx:mouse.vx*(0.1+Math.random()*0.15)+(Math.random()-0.5)*1.5,
-            vy:mouse.vy*(0.1+Math.random()*0.15)+(Math.random()-0.5)*1.5,
-            sz:2+mouse.speed*0.08+Math.random()*2,life:1,
-            decay:0.01+Math.random()*0.015,
-            r:255,g:Math.floor(107+(67-107)*sf),b:Math.floor(53+(147-53)*sf),
-            grav:0.02+Math.random()*0.03
-        });
-    }
-    function updateTrail(){
-        for(let i=trail.length-1;i>=0;i--){
-            const p=trail[i];
-            p.vy+=p.grav;p.vx*=0.98;p.vy*=0.98;
-            p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;p.sz*=0.995;
-            if(p.life<=0)trail.splice(i,1);
-        }
-    }
-    function drawTrail(){
-        for(const p of trail){
-            const a=p.life*0.7;
-            pCtx.beginPath();pCtx.arc(p.x,p.y,p.sz,0,Math.PI*2);
-            pCtx.fillStyle=`rgba(${p.r},${p.g},${p.b},${a})`;pCtx.fill();
-            if(p.life>0.5&&p.sz>2){
-                const g=pCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);
-                g.addColorStop(0,`rgba(${p.r},${p.g},${p.b},${a*0.3})`);
-                g.addColorStop(1,`rgba(${p.r},${p.g},${p.b},0)`);
-                pCtx.fillStyle=g;pCtx.beginPath();pCtx.arc(p.x,p.y,p.sz*3,0,Math.PI*2);pCtx.fill();
+    function buildParticles(){
+        textParticles=[];
+        const offscreen=document.createElement('canvas');
+        const offCtx=offscreen.getContext('2d');
+        offscreen.width=pW;
+        offscreen.height=pH;
+
+        const isMobile=pW<768;
+        const gap=isMobile?3:4;
+
+        const nameFontSize=isMobile?Math.floor(pW/8):Math.min(Math.floor(pW/9),120);
+        const titleFontSize=isMobile?Math.floor(pW/16):Math.min(Math.floor(pW/22),48);
+
+        const nameText='JUSTIN STEINHAUER';
+        const titleText='SOFTWARE DEVELOPER';
+
+        const centerY=pH*0.38;
+
+        offCtx.fillStyle='#fff';
+        offCtx.font=`700 ${nameFontSize}px 'Space Grotesk',sans-serif`;
+        offCtx.textAlign='center';
+        offCtx.textBaseline='middle';
+        offCtx.fillText(nameText,pW/2,centerY);
+
+        offCtx.font=`500 ${titleFontSize}px 'Space Grotesk',sans-serif`;
+        offCtx.fillText(titleText,pW/2,centerY+nameFontSize*0.75);
+
+        const imageData=offCtx.getImageData(0,0,pW,pH).data;
+        for(let y=0;y<pH;y+=gap){
+            for(let x=0;x<pW;x+=gap){
+                const i=(y*pW+x)*4;
+                if(imageData[i+3]>128){
+                    textParticles.push(new Particle(x,y,'#ff6b35'));
+                }
             }
         }
     }
 
-    /* ── CANVAS LOOP ── */
-    (function animate(){
+    function animateParticles(){
         pCtx.clearRect(0,0,pW,pH);
-        updateBlob(Date.now());drawBlob();
-        updateTrail();drawTrail();
-        requestAnimationFrame(animate);
-    })();
+        for(const p of textParticles){
+            p.update();
+            p.draw(pCtx);
+        }
+        requestAnimationFrame(animateParticles);
+    }
 
     /* ── GSAP SETUP ── */
     gsap.registerPlugin(ScrollTrigger);
@@ -684,15 +689,13 @@
 
     /* ── HERO ENTRANCE ── */
     function startHero(){
+        animReady=true;
+        buildParticles();
+        animateParticles();
         const tl=gsap.timeline({defaults:{ease:'power3.out'}});
-        tl.from('.hero-tag',{y:20,opacity:0,duration:0.8})
-          .to('.name-inner',{opacity:1,duration:1,stagger:0.15},'-=0.4')
-          .add(()=>{document.getElementById('hero-line').classList.add('drawn')},'-=0.3')
-          .from('.hero-subtitle',{opacity:0,duration:0.8},'-=0.3')
+        tl.from('.hero-subtitle',{opacity:0,duration:0.8,delay:0.5})
           .from('.hero-desc',{opacity:0,duration:0.8},'-=0.5')
           .from('.hero-btns',{y:15,opacity:0,duration:0.8},'-=0.5')
-          .from('.hero-glow',{scale:0.5,opacity:0,duration:1.5,ease:'power2.out'},'-=1.8')
-          .from('.hero-ring',{scale:0.5,opacity:0,duration:1.2,stagger:0.15,ease:'power2.out'},'-=1.5')
           .from('.scroll-indicator',{opacity:0,duration:1},'-=0.5');
         setTimeout(typeEffect,600);
     }
