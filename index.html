@@ -138,7 +138,7 @@
 
         /* CERTIFICATIONS */
         #certs{padding:120px 0}
-        .cert-card-wrap{display:flex;justify-content:center}
+        .cert-card-wrap{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
         .cert-card{position:relative;background:#0a0a0a;border-radius:24px;padding:52px 48px;text-align:center;max-width:420px;width:100%;overflow:hidden}
         .cert-card::before{content:'';position:absolute;inset:0;border-radius:24px;padding:2px;background:linear-gradient(135deg,#ff6b35,#e84393,#a855f7,#ff6b35);background-size:300% 300%;animation:borderGlow 4s ease infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
         @keyframes borderGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -260,8 +260,8 @@
                     <span class="stat-label">Technologies</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-num" data-target="1">0</span>
-                    <span class="stat-label">Certification</span>
+                    <span class="stat-num" data-target="2">0</span>
+                    <span class="stat-label">Certifications</span>
                 </div>
             </div>
         </div>
@@ -489,6 +489,13 @@
                     <div class="cert-issuer">freeCodeCamp</div>
                     <div class="cert-date">June 2026</div>
                     <a href="https://www.freecodecamp.org/certification/jsteinhauer7/python-v9" target="_blank" class="cert-link">View Certificate <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="cert-card">
+                    <span class="cert-badge">🏆</span>
+                    <h3>JavaScript Algorithms and Data Structures</h3>
+                    <div class="cert-issuer">freeCodeCamp</div>
+                    <div class="cert-date">June 2026</div>
+                    <a href="https://www.freecodecamp.org/certification/jsteinhauer7/javascript-v9" target="_blank" class="cert-link">View Certificate <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -815,7 +822,7 @@
     /* ── SCROLL ANIMATIONS ── */
     gsap.from('.about-text p',{y:30,opacity:0,duration:0.8,stagger:0.15,scrollTrigger:{trigger:'.about-text',start:'top 82%'}});
     gsap.from('.stat-card',{y:40,opacity:0,duration:0.6,stagger:0.12,scrollTrigger:{trigger:'.stats-grid',start:'top 85%'}});
-    gsap.from('.cert-card',{y:40,opacity:0,duration:1,scrollTrigger:{trigger:'.cert-card-wrap',start:'top 82%'}});
+    gsap.from('.cert-card',{y:40,opacity:0,duration:1,stagger:0.2,scrollTrigger:{trigger:'.cert-card-wrap',start:'top 82%'}});
     gsap.from('.contact-desc,.contact-btn,.social-links',{y:30,opacity:0,duration:0.8,stagger:0.12,scrollTrigger:{trigger:'#contact',start:'top 82%'}});
 
     /* ── HORIZONTAL SCROLL PROJECTS ── */
