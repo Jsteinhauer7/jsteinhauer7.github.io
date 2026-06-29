@@ -28,6 +28,6 @@ Self-taught programmer based in Miami, FL. I build full-stack web applications, 
 
 ## Contact
 
-- **Email:** triipnotic@gmail.com
+- **Email:** jsteinhauer7@gmail.com
 - **GitHub:** [github.com/Jsteinhauer7](https://github.com/Jsteinhauer7)
 - **Portfolio:** [jsteinhauer7.github.io](https://jsteinhauer7.github.io)
